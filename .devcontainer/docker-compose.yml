@@ -1,0 +1,35 @@
+version: "2.3"
+services:
+  vscode-container:
+    container_name: vscode-core-service-lib
+    network_mode: bridge
+    build:
+      context: .
+      args:
+        USER_UID:
+        USER_GID:
+    ports:
+      - 9012:9000
+    user: vscode
+    environment:
+      - POETRY_VIRTUALENVS_IN_PROJECT=1
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - apparmor:unconfined
+    # Overrides default command so things don't shut down after the process ends.
+    command: /bin/bash -c "
+        echo 'alias ll="'"'"ls -la"'"'"' >> home/vscode/.bashrc;
+        echo 'alias lh="'"'"ls -lha"'"'"' >> home/vscode/.bashrc;
+        while sleep 1000; do :; done
+      "
+    volumes:
+      - ..:/workspace
+      - ~/.ssh:/home/vscode/.ssh:ro
+      - ~/.pip:/home/vscode/.pip:ro
+      - ~/.kube:/home/vscode/.kube:ro
+      - ~/.config/pypoetry/:/home/vscode/.config/pypoetry/
+      - ~/.local/share/python_keyring/:/home/vscode/.local/share/python_keyring/
+      - ./volumes/vscode-server:/home/vscode/.vscode-server
+      - ./volumes/vscode-server-insiders:/home/vscode/.vscode-server-insiders

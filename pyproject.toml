@@ -1,0 +1,64 @@
+[build-system]
+# Always keep poetry version in sync between pyproject.toml, Dockerfile and .devcontainer/Dockerfile
+requires = ["poetry_core==1.1.6"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "coreservicelib"
+version = "1.0.2"
+keywords = ["coreservicelib"]
+description = "Core service library"
+authors = ["Platform Team"]
+packages = [
+    { include = "core_service_lib" },
+    { include = "*.md", format = "sdist" },
+# This will not include the generated documentation as it is in the .gitignore file
+#    { include = "docs", format = "sdist" },
+]
+include = [
+# This will also include the doc in the wheel file
+#    "docs/build/html/**/*"
+]
+#exclude = [
+#    "docs/build/doctrees",
+#]
+
+[[tool.poetry.source]]
+name = "dfartifactory"
+url = "https://${ARTIFACTORY_URL}/artifactory/api/pypi/pypi/simple"
+default = true
+
+[tool.poetry.dependencies]
+python = "~3.8"
+flask = "^1.1.2"
+certifi = "2020.12.5"
+pyyaml = "^5.4.1"
+
+pylint = { version = "^2.6.0", optional = true }
+pylint-exit = { version = "^1.2.0", optional = true }
+
+[tool.poetry.extras]
+pylint = ["pylint", "pylint-exit"]
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.8.4"
+coverage = "^5.3"
+pytest = "^6.2.1"
+pytest-bdd = "^4.0.2"
+pytest-cov = "^2.10.1"
+pytest-mock = "^3.4.0"
+pytest-runner = "^5.2"
+pytest-watch = "^4.2.0"
+sphinx = "^3.3.1"
+sphinx-rtd-theme = "^0.5.0"
+sphinx-click = "^2.5.0"
+pylint = "^2.6.0"
+pylint-exit = "^1.2.0"
+black = {version = "^20.8b1"}
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120

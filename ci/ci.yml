@@ -1,0 +1,64 @@
+stages:
+  - python:test
+  - python:build
+  - publish:report
+
+python:test:
+  stage: python:test
+  image:
+    name: python:3.8-buster
+    entrypoint: [""]
+  script:
+    - export POETRY_VERSION=1.1.4
+    - export SAGECIPHER_VERSION=0.7.5
+    - export POETRY_HTTP_BASIC_DFARTIFACTORY_USERNAME=${ARTIFACTORY_USERNAME}
+    - export POETRY_HTTP_BASIC_DFARTIFACTORY_PASSWORD=${ARTIFACTORY_API_KEY}
+    - pip --disable-pip-version-check --no-cache-dir install poetry==$POETRY_VERSION sagecipher==$SAGECIPHER_VERSION
+    - poetry install
+    - poetry run make lint
+    - poetry run make test-cov
+    - poetry run make docs
+    - poetry run make merge-reports
+  artifacts:
+    paths:
+    - reports
+    reports:
+      cobertura: build/reports/coverage-reports/coverage.xml
+      junit: build/reports/tests.xml
+
+python:build:
+  stage: python:build
+  image:
+    name: python:3.8-buster
+    entrypoint: [""]
+  script:
+    - export POETRY_VERSION=1.1.4
+    - export SAGECIPHER_VERSION=0.7.5
+    - export POETRY_HTTP_BASIC_DFARTIFACTORY_USERNAME=${ARTIFACTORY_USERNAME}
+    - export POETRY_HTTP_BASIC_DFARTIFACTORY_PASSWORD=${ARTIFACTORY_API_KEY}
+    - export POETRY_HTTP_BASIC_DFARTIFACTORY_USERNAME=${ARTIFACTORY_USERNAME}
+    - export POETRY_HTTP_BASIC_DFARTIFACTORY_PASSWORD=${ARTIFACTORY_API_KEY}
+    - mkdir /root/.pip
+    - cp ci/pip.conf /root/.pip/pip.conf
+    - echo "machine ${ARTIFACTORY_URL}" >> ~/.netrc \
+        && echo "    login ${ARTIFACTORY_USERNAME}" >> ~/.netrc \
+        && echo "    password ${ARTIFACTORY_API_KEY}" >> ~/.netrc \
+        && echo "machine ${ARTIFACTORY_URL}" >> ~/.netrc \
+        && echo "    login ${ARTIFACTORY_USERNAME}" >> ~/.netrc \
+        && echo "    password ${ARTIFACTORY_API_KEY}" >> ~/.netrc
+    - pip -vvv --disable-pip-version-check --no-cache-dir install poetry==$POETRY_VERSION sagecipher==$SAGECIPHER_VERSION
+    - poetry install
+    - ./updateVersion.sh
+    - poetry run make dist
+    - poetry config repositories.dfartifactory https://${ARTIFACTORY_URL}/artifactory/api/pypi/pypi-internal/
+    - poetry publish -r dfartifactory
+pages:
+  stage: publish:report
+  script:
+    - mv reports/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

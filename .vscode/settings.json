@@ -1,0 +1,29 @@
+{
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.pythonPath": ".venv/bin/python",
+  "python.envFile": "${workspaceRoot}/.env",
+  "python.linting.pylintPath": ".venv/bin/pylint",
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/.venv/**": true,
+    "**/.devcontainer/volumes/**": true,
+    "**/.eggs/**": true,
+    "**/output_folder/**": true,
+    "**/pdf_input_folder/**": true,
+    "**/logs/**": true
+  },
+  "git.ignoreLimitWarning": true,
+  "python.languageServer": "Pylance",
+  "python.analysis.extraPaths": [
+    "core_service_lib"
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {},
+  "python.sortImports.args": [
+    "--src=${workspaceFolder}",
+  ],
+  "python.formatting.provider": "black"
+}

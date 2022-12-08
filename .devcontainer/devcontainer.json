@@ -1,0 +1,30 @@
+{
+	"name": "core-service-lib",
+	"dockerComposeFile": ["docker-compose.yml"],
+	"service": "vscode-container",
+
+	"workspaceFolder": "/workspace",
+
+	// Use 'settings' to set *default* container specific settings.json values on container create.
+	// You can edit these settings after create using File > Preferences > Settings > Remote.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.linting.pylintEnabled": true,
+		"python.linting.pylintPath": "/usr/local/bin/pylint",
+		"python.linting.enabled": true
+	},
+
+	// Specifies a command to run after the container is created
+	// Will be run only the first time the container is created (only after vscode extensions are installed)
+	// Do not run a postCreateCommand as on windows it does not seem to conclude, it is better to let the user run it manually
+	// "postCreateCommand": "pipenv sync --dev --verbose",
+
+	"extensions": [
+		"ms-python.python",
+		"brainfit.vscode-importmagic",
+		"omagerio.tabsort",
+		"alexkrechik.cucumberautocomplete",
+		"ms-python.vscode-pylance"
+	]
+}

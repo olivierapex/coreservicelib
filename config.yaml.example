@@ -1,0 +1,12 @@
+# here a config example that can be put in /etc/dataservice/config.yaml or in a configMap
+
+log:
+  path: "/var/log/your_micro_service/data_service.log"
+  level: DEBUG
+mongodb:
+  host: ''
+  authdb: ''
+  user: ''
+  pass: ''
+whitelist_ip: []
+host_ip: 0.0.0.0

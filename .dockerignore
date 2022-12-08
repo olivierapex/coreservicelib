@@ -1,0 +1,9 @@
+.pytest_cache
+.venv
+.git
+tests
+.*.egg-info
+Jenkinsfile
+Makefile
+pytest.ini
+.devcontainer
